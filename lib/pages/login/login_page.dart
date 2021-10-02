@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_food/pages/login/homepage.dart';
+import 'package:flutter/cupertino.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -48,8 +49,8 @@ class _LoginPageState extends State<LoginPage> {
             end: Alignment.bottomCenter,
             // ไล่เฉดจากสีแดงไปสีน้ำเงิน
             colors: [
-              Colors.lightBlue.shade100,
-              Colors.lightBlue,
+              Colors.lightBlueAccent,
+              Colors.deepPurpleAccent,
             ],
           ),
         ),
@@ -135,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
             input = "";
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => Homepage()),
+              MaterialPageRoute(builder: (context) => HomePage1()),
             );
 
             //_showMaterialDialog("OK", "Valid PIN.");
@@ -187,6 +188,21 @@ class LoginButton extends StatelessWidget {
           )
               : SizedBox.shrink()),
         ),
+      ),
+    );
+  }
+}
+class HomePage1 extends StatelessWidget {
+  const HomePage1({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("FLUTTER FOOD"),
+      ),
+      body: Center(
+        child: Text('THIS IS A HOME PAGE',style: Theme.of(context).textTheme.headline1,),
       ),
     );
   }
