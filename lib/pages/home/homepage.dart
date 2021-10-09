@@ -1,6 +1,8 @@
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_food/helpers/platform_aware_asset_image.dart';
 import 'package:flutter_food/pages/food/food_page.dart';
 import 'package:flutter_food/pages/profile/profile_page.dart';
 
@@ -14,13 +16,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var _subPageIndex = 0;
+  var _selectedDrawerItemIndex = 0;
+
+  final _pageDataList = [
+    {
+      'icon': Icons.fastfood,
+      'title': 'Food',
+      'page': FoodMainPage(),
+    },
+    {
+      'icon': Icons.person,
+      'title': 'Profile',
+      'page': ProfilePage(),
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Food'),
+        title: Text(_pageDataList[_selectedDrawerItemIndex]['title'] as String),
       ),
       drawer: Drawer(
         child: ListView(
@@ -32,10 +47,11 @@ class _HomePageState extends State<HomePage> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.purple.shade200,
-                    Colors.pink,
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.background,
                   ],
                 ),
+                //color: Theme.of(context).colorScheme.primary,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,83 +61,54 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         width: 80.0,
                         height: 80.0,
-                        child: Image.asset('assets/images/profile.jpg'),
-                      )),
+                        child: PlatformAwareAssetImage(
+                          assetPath: 'assets/images/profile.jpg',
+                        ),
+                      )
+                  ),
+                  SizedBox(height: 8.0),
                   Text(
                     'Apinya Yenjaichueay',
-                    style: Theme.of(context).textTheme.headline2,
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),
                   ),
+                  SizedBox(height: 4.0),
                   Text(
                     'yenjaichueay_a@silpakorn.edu',
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: TextStyle(
+                        fontSize: 14.0, color: Colors.white.withOpacity(0.6)),
                   ),
                 ],
               ),
             ),
-            ListTile(
-              title: _buildDrawerItem(
-                  Icon(
-                    Icons.fastfood,
-                    color: _subPageIndex == 0 ? Colors.pink : Colors.purple,
-                  ),
-                  'Food'),
-              onTap: () => _showSubPage(0),
-            ),
-            ListTile(
-              title: _buildDrawerItem(
-                  Icon(
-                    Icons.person,
-                    color: _subPageIndex == 1 ? Colors.pink : Colors.purple,
-                  ),
-                  'Profile'),
-              onTap: () {
-                _showSubPage(1);
-                //Navigator.of(context).pushNamed(LoginPage.routeName);
-              },
-              focusColor: Colors.pinkAccent,
-              selectedTileColor: Colors.blue,
-            ),
+            for (var item in _pageDataList)
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(
+                      item['icon'] as IconData,
+                      color: item == _pageDataList[_selectedDrawerItemIndex]
+                          ? Theme.of(context).accentColor
+                          : null,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(item['title'] as String),
+                  ],
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedDrawerItemIndex =
+                        _pageDataList.indexWhere((element) => item == element);
+                  });
+                  Navigator.of(context).pop();
+                },
+                selected: item == _pageDataList[_selectedDrawerItemIndex],
+              ),
           ],
         ),
       ),
       body: Container(
-        child: _buildSubPage(),
+        child: _pageDataList[_selectedDrawerItemIndex]['page'] as Widget,
       ),
-    );
-  }
-
-  _showSubPage(int index) {
-    setState(() {
-      _subPageIndex = index;
-    });
-    Navigator.of(context).pop();
-  }
-
-  Widget _buildSubPage() {
-    switch (_subPageIndex) {
-      case 0: //home page
-        return FoodPage();
-    /*Center(
-          child: Text('Food Menu',
-              style: Theme.of(context).textTheme.headline1),
-        );*/
-      case 1:
-        return ProfilePage();
-    /*Center(
-          child: Text('Page1', style: Theme.of(context).textTheme.headline1),
-        );*/
-      default:
-        return SizedBox.shrink();
-    }
-  }
-
-  Row _buildDrawerItem(Icon icon, String title) {
-    return Row(
-      children: [
-        icon,
-        SizedBox(width: 8.0),
-        Text(title),
-      ],
     );
   }
 }

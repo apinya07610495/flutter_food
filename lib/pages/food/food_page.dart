@@ -1,48 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food/pages/food/foodlist.dart';
-import 'package:flutter_food/pages/order/order_page.dart';
 
-class FoodPage extends StatefulWidget {
-
-  static const routeName = '/food';
-  const FoodPage({Key? key}) : super(key: key);
+class FoodMainPage extends StatefulWidget {
+  const FoodMainPage({Key? key}) : super(key: key);
 
   @override
-  _FoodPageState createState() => _FoodPageState();
+  _FoodMainPageState createState() => _FoodMainPageState();
 }
 
-class _FoodPageState extends State<FoodPage> {
+class _FoodMainPageState extends State<FoodMainPage> {
   var _selectedBottomNavIndex = 0;
-  List<Widget> _pageWidget = <Widget>[
-    FoodListPage(),
-    OrderPage(),
-  ];
-  List<BottomNavigationBarItem> _menuBar
-  = [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.menu_book),
-      label: 'Menu',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.shopping_cart),
-      label: 'Your Order',
-    ),
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pageWidget.elementAt(_selectedBottomNavIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: _menuBar,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Menu',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Your Order',
+          ),
+        ],
         currentIndex: _selectedBottomNavIndex,
-        selectedItemColor: Colors.pink,
-        unselectedItemColor: Colors.pink.shade200,
-        onTap: (index){
+        onTap: (index) {
           setState(() {
             _selectedBottomNavIndex = index;
           });
-
         },
+      ),
+      body: _selectedBottomNavIndex == 0
+          ? FoodListPage()
+          : Container(
+        child: Center(
+          child: Text('YOUR ORDER',
+              style: Theme.of(context).textTheme.headline1),
+        ),
       ),
     );
   }
